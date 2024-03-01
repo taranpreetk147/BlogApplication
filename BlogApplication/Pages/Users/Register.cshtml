@@ -1,0 +1,55 @@
+﻿@page
+@model BlogApplication.Pages.Users.RegisterModel
+<form method="post">
+    <div class="card text-center">
+        <div class="card-header">
+            <h2 class="text-primary text-center">Register</h2>
+        </div>
+        <div class="card-body">
+            <div class="container rounded border m-2 p-2">
+                <div class="form-group row">
+                    <label for="userName" class="col-sm-4 col-form-label">UserName</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="userName" name="userName" class="form-control" placeholder="UserName" required> <br>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group row">
+                        <label for="emailAddress" class="col-sm-4 col-form-label">EmailAddress</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="emailAddress" name="emailAddress" class="form-control" placeholder="EmailAddress" required> <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group row">
+                        <label for="address" class="col-sm-4 col-form-label">Address</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="address" name="address" class="form-control" placeholder="Address" required> <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group row">
+                        <label for="password" class="col-sm-4 col-form-label">Password</label>
+                        <div class="col-sm-5">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required> <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            <button type="submit" class="btn btn-info">Register</button>
+        </div>
+    </div>
+</form>
+@if (!string.IsNullOrEmpty(Model.ReturnMessage))
+{
+    <script>
+        alert('@Model.ReturnMessage');
+    </script>
+}
+<script>
+    document.getElementById('#password')
+</script>

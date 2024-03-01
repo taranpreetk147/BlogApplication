@@ -1,0 +1,39 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="row">
+    <div class="col-9">
+<div class="text-center text-info">
+    <h1 class="display-4">Welcome Check Blogs</h1>
+    </div>
+@*    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+*@
+        <div class="col-3">
+            <a class="btn btn-outline-info" asp-area="" asp-page="/Blog/Createblog">Create a blog</a>
+        </div>
+</div> 
+</div>
+
+<div class="container rounded border m-2 p-2">
+
+    <div class="row">
+        @foreach (var post in Model.BlogPosts)
+        {
+                <div class="col-md-4 col-sm-6">
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top " src="@post.ImageURL" alt="Card image cap" >
+                <div class="card-body m-2 p-2">
+                    <h5 class="card-title">@post.Title</h5>
+                    <p class="card-text">@post.Content</p>
+                    <a href="#" class="btn btn-primary">Go</a>
+                </div>
+            </div>          
+            </div>
+        }
+        
+    </div>
+
+</div>
