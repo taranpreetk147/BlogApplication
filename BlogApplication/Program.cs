@@ -1,12 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,6 +18,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Privacy");
+    //options.Conventions.AuthorizePage("/Blog/Createblog");
 });
 
 builder.Services.AddSession(options =>
@@ -37,6 +29,9 @@ builder.Services.AddSession(options =>
     // Make the session cookie essential
     options.Cookie.IsEssential = true;
 });
+
+// Add IHttpContextAccessor to the service container
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -53,16 +48,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession(); // Add session middleware before authentication and authorization middleware
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseSession(); // Add session middleware after authentication and authorization middleware
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapRazorPages();
 });
-
-app.MapRazorPages();
 
 app.Run();

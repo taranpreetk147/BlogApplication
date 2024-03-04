@@ -37,4 +37,3 @@ namespace BlogApplication.Pages.Users
         }
     }
 }
-

@@ -4,36 +4,54 @@
     ViewData["Title"] = "Home page";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
 <div class="row">
     <div class="col-9">
-<div class="text-center text-info">
-    <h1 class="display-4">Welcome Check Blogs</h1>
+        <h1 class="display-4 text-info">Welcome Check Blogs</h1>
     </div>
-@*    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-*@
-        <div class="col-3">
-            <a class="btn btn-outline-info" asp-area="" asp-page="/Blog/Createblog">Create a blog</a>
-        </div>
-</div> 
+    @*    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    *@
+    <div class="col-3">
+        <a class="btn btn-outline-info " asp-area="" asp-page="/Blog/Createblog">Create a blog</a>
+    </div>
+
 </div>
 
-<div class="container rounded border m-2 p-2">
-
-    <div class="row">
-        @foreach (var post in Model.BlogPosts)
-        {
-                <div class="col-md-4 col-sm-6">
+<div class="row">
+    @foreach (var post in Model.BlogPosts)
+    {
+        <div class="col-md-4 mb-4 col-sm-6">
             <div class="card" style="width: 20rem;">
-                <img class="card-img-top " src="@post.ImageURL" alt="Card image cap" >
+                @if (post.ImageURL != null)
+                {
+                    <img src="data:image;base64,@Convert.ToBase64String(post.ImageURL)" class="card-img-top" alt="Blog Image" style="max-width: 300px; max-height: 200px; margin-left:auto; margin-right:auto; margin-top:2%" />
+                }
                 <div class="card-body m-2 p-2">
-                    <h5 class="card-title">@post.Title</h5>
-                    <p class="card-text">@post.Content</p>
-                    <a href="#" class="btn btn-primary">Go</a>
+                    <h5 class="card-title">Title: @post.Title</h5>
+                    <a asp-page="/Blog/ContentDisplayModel" asp-route-postId="@post.PostId" class="btn btn-outline-info">View Content...</a>
+                    <div class="row" style="margin-left:180px">
+                     @*   <form method="post">
+                            <button type="submit" name="action" value="like" class="btn btn-outline-primary">
+                                <i class="fas fa-thumbs-up"></i>
+                            </button>
+                            <button type="submit" name="action" value="unlike" class="btn btn-outline-danger">
+                                <i class="fas fa-thumbs-down"></i>
+                            </button>
+                            <input type="hidden" name="postId" value="@post.PostId" />
+                        </form>*@
+                        <form method="post">
+                            <input type="hidden" name="postId" value="@post.PostId" />
+                            <button type="submit"><i class="fas fa-heart"></i></button>
+                        </form>                       
+                    </div>
+                    <span style="margin-left:200px">@post.Likes</span>
                 </div>
-            </div>          
             </div>
-        }
-        
-    </div>
-
+        </div>
+    }
 </div>
+
+
+                            

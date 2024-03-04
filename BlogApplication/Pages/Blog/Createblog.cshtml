@@ -4,27 +4,49 @@
     ViewData["Title"] = "Create Blog";
 }
 
-<h2>Create Blog</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for="Title" class="form-control" />
+<div class="row">
+    <div class="col-9">
+        <a href="/Index" class="btn btn-outline-info"><i class="fas fa-home"></i></a>
     </div>
-    <div class="form-group">
-        <label asp-for="Content">Content</label>
-        <textarea asp-for="Content" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-        <label asp-for="ImageURL">Image URL</label>
-        <input type="file" asp-for="ImageURL" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
+    <h1 class="text-center text-info text-decoration-underline">Create Blog</h1>
+</div>
 
 @if (ViewData["Message"] != null)
 {
+    <div class="alert alert-success" role="alert">
+        @ViewData["Message"]
+    </div>
+}
+
+<div class="container rounded border m-2 p-2">
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" name="Title" asp-for="Title" />
+        </div>
+        <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea class="form-control" id="content" name="Content" asp-for="Content"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="imageFile">Upload Image:</label>
+            <input type="file" class="form-control" id="imageFile" name="ImageFile" asp-for="ImageFile" />
+        </div>
+           <div class="d-flex justify-content-center mt-2">
+            <button type="submit" class="btn btn-primary ml-auto">Create</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.tiny.cloud/1/yceb7wqr2ps5v3vunieemb9syejgjl73j210uk6duakmo75e/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
-        alert('@ViewData["Message"]');
+        tinymce.init({
+            selector: "textarea",
+            Plugins: "lists",
+            menubar: "file edit format"
+        })
     </script>
 }
