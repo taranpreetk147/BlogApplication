@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using BlogApplication.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BlogApplication.Pages
 {
@@ -28,34 +29,31 @@ namespace BlogApplication.Pages
             LoadBlogPosts();
             return Page();
         }
-        //public IActionResult OnPost(string action, int postId)
-        //{
-        //    if (!User.Identity.IsAuthenticated)
-        //    {
-        //        return RedirectToPage("/Users/Login");
-        //    }
-        //    if (action == "like" || action == "unlike")
-        //    {
-        //        ToggleLikeStatus(postId, action);
-        //        // Reload blog posts after updating like status
-        //        LoadBlogPosts();
-        //    }
-        //    return RedirectToPage();
-        //}
-        public void OnPost(int postId)
+        public IActionResult OnPostLike(int postId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Users/Login");
+            }
+            int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+            if (userId == null)
+            {
+                // Handle the case where userId is not found in the session
+                return RedirectToPage("/Users/Login");
+            }
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("conStr")))
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("UpdateLikeStatus", connection))
+                using (SqlCommand command = new SqlCommand("UpdateLikeStatusAndCount", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@PostId", postId);
+                    command.Parameters.AddWithValue("@UserId", userId);
                     command.ExecuteNonQuery();
                 }
             }
-
-            Response.Redirect("/Index");
+            LoadBlogPosts();
+            return RedirectToPage();
         }
         private void LoadBlogPosts()
         {
@@ -79,6 +77,7 @@ namespace BlogApplication.Pages
                             Content = reader.GetString(2),
                             ImageURL = reader.IsDBNull(3) ? null : (byte[])reader["ImageURL"],
                             Likes = reader.GetInt32(4),
+                            IsLiked = reader.GetBoolean(5),
                         };
 
                         BlogPosts.Add(blog);
@@ -86,20 +85,6 @@ namespace BlogApplication.Pages
                 }
             }
         }
-        //private void ToggleLikeStatus(int postId, string action)
-        //{
-        //    using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("conStr")))
-        //    {
-        //        connection.Open();
-        //        using (SqlCommand command = new SqlCommand("LikeStatus", connection))
-        //        {
-        //            command.CommandType = CommandType.StoredProcedure;
-        //            command.Parameters.AddWithValue("@PostId", postId);
-        //            command.Parameters.AddWithValue("@Action", action);
-        //            command.ExecuteNonQuery();
-        //        }
-        //    }
-        //}
     }
 
 }

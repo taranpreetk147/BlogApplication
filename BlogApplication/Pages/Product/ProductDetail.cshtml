@@ -1,0 +1,155 @@
+﻿@page
+@using System.Text.RegularExpressions
+@model BlogApplication.Pages.Product.ProductDetailModel
+@using Microsoft.Extensions.Options
+@inject IOptions<BlogApplication.StripeSettings> stripe;
+@{
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<div class="row">
+    <div class="col-9" style="margin-top:80px;">
+        <a href="/Product/ViewProduct" class="btn btn-outline-info"><i class="fas fa-home"></i></a>
+    </div>
+    <h1 class="text-center text-info text-decoration-underline">Product Detail</h1>
+</div>
+<input type="hidden" id="hdnIsAuth" value="@Model.isUserAuthenticated" />
+<form method="post" asp-page="/Product/ProductBuy">
+    <div class="container rounded border m-2 p-2">
+        <div class="row">
+            @foreach (var product in Model.Products)
+            {
+                <input type="hidden" name="productId" value="@Model.Products.First().Id" />
+                <input type="hidden" name="quantity" id="quantityInput" />
+                <input type="hidden" name="totalAmount" id="totalAmountInput" />
+                <div class="col-8">
+                    <div class="form-group row">
+                        <h5><label for="category" class="text-info">Category:</label></h5>
+                        <input type="text" class="form-control m-2 p-2" id="category" name="category" asp-for="@product.Category" disabled />
+                    </div>
+                    <div class="form-group">
+                        <h5><label for="name" class="text-info">Name:</label></h5>
+                        <input type="text" class="form-control m-2 p-2" id="name" name="name" asp-for="@product.Name" disabled />
+                    </div>
+                    <div class="form-group">
+                        <h5><label for="description" class="text-info">Description:</label></h5>
+                        @{
+                            var plainText = Regex.Replace(@product.Description, "<.*?>", string.Empty);
+                        }
+                        <input type="text" class="form-control m-2 p-2" id="description" name="description" value="@Html.Raw(plainText)" disabled />
+                    </div>
+                    <div class="form-group">
+                        <h5><label for="quantity" class="text-info">Quantity:</label></h5>
+                        <input type="number" class="form-control m-2 p-2" id="quantity" name="quantity" asp-for="@product.Quantity" min="1" />
+                    </div>
+                    <div class="form-group">
+                        <h5><label for="amount" class="text-info">Pay Amount:</label></h5>
+                        <input type="text" class="form-control m-2 p-2" id="amount" name="amount" asp-for="@product.Amount" disabled />
+                    </div>
+                    <div class="d-flex justify-content-center mt-2">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <script src="https://checkout.stripe.com/checkout.js"
+                            class="stripe-button"
+                            data-key="@stripe.Value.PublishableKey"
+                            data-name="Product Shopping"
+                            data-description="Get Product For Testing"
+                            data-locale="auto"
+                            data-label="Place Order"
+                            data-allow-remeber-me="false"
+                            data-image="https://stripe.com/img/documentation/checkout/marketplace.png">
+                            </script>
+                            <script>
+                                var el = document.getElementsByClassName('stripe-button-el');
+                                el[0].style.display = "none";
+                            </script>
+                            <button type="submit" value="Place Order" class="btn btn-info" style="margin-left:50%">Buy</button>
+
+                        }
+                        else
+                        {
+                            <a class="btn btn-success" asp-area="" asp-page="/Users/Login" style="margin-left:50%">Login First If you want to buy product!!</a>
+                        }
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3 offset-lg-1 text-center m-4">
+                    <div class="form-group">
+                        <label for="quantity"></label>
+                        @if (product.ImageURL != null)
+                        {
+                            <img src="data:image;base64,@Convert.ToBase64String(product.ImageURL)" class="card-img-top" alt="Blog Image" style="max-width: 300px; max-height: 200px; margin-left:auto; margin-right:auto; margin-top:2%" />
+                        }
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-3">
+        <h5 class="text-success" style="margin-left:310%">Ratings:</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3" style="margin-left:75%">
+        @for (int i = 1; i <= 5; i++)
+        {
+            var ratingClass = "btn btn-outline-warning";
+            if (Model.IsUserRated && i <= Model.Rating)
+            {
+                ratingClass = "btn btn-outline-success";
+            }
+
+            <button type="button" class="@ratingClass" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer;"
+                onclick="rateProduct(@Model.Products.First().Id, @i)">
+                <i class="fas fa-star"></i>
+            </button>
+        }
+    </div>
+</div>
+
+<script>
+    function rateProduct(productId, rating) {
+        var respIdentity = $("#hdnIsAuth").val();
+        if (respIdentity == "false") {
+            window.location.href = '/Users/Login';
+        }
+        else {
+            $.ajax({
+                type: "POST",
+                url: "/Product/ProductDetail?handler=RateProduct",
+                data: { productId: productId, rating: rating },
+                headers: {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+
+
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#quantity').on('input', function () {
+            var quantity = $(this).val();
+            var pricePerItem = parseFloat('@Model.Products.First().Amount');
+            var totalAmount = quantity * pricePerItem;
+            $('#quantityInput').val(quantity); // Set the quantity value to the hidden input field
+            $('#totalAmountInput').val(totalAmount); // Set the total amount value to the hidden input field
+            $('#amount').val(totalAmount); // Update the displayed total amount
+        });
+    });
+</script>
+
+
+
+
+

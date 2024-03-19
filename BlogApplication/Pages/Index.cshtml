@@ -6,17 +6,17 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <div class="row">
-    <div class="col-9">
+    <div class="col-9" style="margin-top:80px;">
         <h1 class="display-4 text-info">Welcome Check Blogs</h1>
     </div>
-    @*    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    *@
-    <div class="col-3">
-        <a class="btn btn-outline-info " asp-area="" asp-page="/Blog/Createblog">Create a blog</a>
-    </div>
-
+    @if(User.Identity.IsAuthenticated)
+    {
+        <div class="col-3" style="margin-top:80px;">
+            <a class="btn btn-outline-info " asp-area="" asp-page="/Blog/Createblog">Create a blog</a>
+        </div>
+    }
 </div>
 
 <div class="row">
@@ -32,26 +32,32 @@
                     <h5 class="card-title">Title: @post.Title</h5>
                     <a asp-page="/Blog/ContentDisplayModel" asp-route-postId="@post.PostId" class="btn btn-outline-info">View Content...</a>
                     <div class="row" style="margin-left:180px">
-                     @*   <form method="post">
-                            <button type="submit" name="action" value="like" class="btn btn-outline-primary">
-                                <i class="fas fa-thumbs-up"></i>
-                            </button>
-                            <button type="submit" name="action" value="unlike" class="btn btn-outline-danger">
-                                <i class="fas fa-thumbs-down"></i>
-                            </button>
-                            <input type="hidden" name="postId" value="@post.PostId" />
-                        </form>*@
                         <form method="post">
-                            <input type="hidden" name="postId" value="@post.PostId" />
-                            <button type="submit"><i class="fas fa-heart"></i></button>
-                        </form>                       
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <h2><button type="submit" asp-page-handler="Like" asp-route-postId="@post.PostId" class="like-button @((post.IsLiked) ? "liked" : "")" data-post-id="@post.PostId" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer;margin-left:20%;">
+                                    <i class="fas fa-heart"></i>
+                                </button></h2>
+                            }
+                            else
+                            {
+                                <h2><button type="submit" asp-page-handler="Like" asp-route-postId="@post.PostId" class="like-button" data-post-id="@post.PostId" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer;margin-left:20%;"><i class="fas fa-heart"></i>
+                                </button></h2>
+                            }
+                        </form>
                     </div>
-                    <span style="margin-left:200px">@post.Likes</span>
+                    <span style="margin-left:223px">@post.Likes</span>
                 </div>
             </div>
         </div>
     }
 </div>
+<style>
+    .liked {
+        color: red; /* Change the color to red */
+    }
+</style>
 
 
-                            
+
+

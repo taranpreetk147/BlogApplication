@@ -1,0 +1,31 @@
+﻿@page
+@model BlogApplication.Pages.Product.ViewProductModel
+@{
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<div class="row">
+    <div class="text-center" style="margin-top:80px;">
+        <h1 class="display-4 text-info">Products</h1>
+    </div>
+    </div>
+<div class="row">
+    @foreach (var product in Model.Products)
+    {
+        <div class="col-md-4 mb-4 col-sm-6">
+            <div class="card" style="width: 20rem;">
+                @if (product.ImageURL != null)
+                {
+                    <img src="data:image;base64,@Convert.ToBase64String(product.ImageURL)" class="card-img-top" alt="Blog Image" style="max-width: 300px; max-height: 200px; margin-left:auto; margin-right:auto; margin-top:2%" />
+                }
+                <div class="card-body m-2 p-2">
+                    <h5 class="card-title text-success">Name: @product.Name</h5>
+                    <h5 class="card-title text-success">Price: @product.Amount</h5>
+                    <h5 class="card-title text-success" style="margin-left:60%">Stock: @product.Quantity</h5>
+                    <a asp-page="/Product/ProductDetail" asp-route-productId="@product.Id" class="btn btn-outline-info">View Detail...</a>                    
+                </div>
+            </div>
+        </div>
+    }
+    </div>

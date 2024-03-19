@@ -1,0 +1,62 @@
+﻿@page
+@model BlogApplication.Pages.Product.AddProductModel
+@{
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="row">
+    <div class="col-9" style="margin-top:80px;">
+        <a href="/Index" class="btn btn-outline-info"><i class="fas fa-home"></i></a>
+    </div>
+    <h1 class="text-center text-info text-decoration-underline">Add Product</h1>
+</div>
+
+@if (ViewData["Message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewData["Message"]
+    </div>
+}
+
+<div class="container rounded border m-2 p-2">
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <input type="text" class="form-control" id="category" name="category" asp-for="category" />
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="Name" asp-for="name" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" id="description" name="Description" asp-for="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="text" class="form-control" id="quantity" name="Quantity" asp-for="quantity" />
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input type="text" class="form-control" id="amount" name="Amount" asp-for="amount" />
+        </div>
+        <div class="form-group">
+            <label for="imageFile">Select Image:</label>
+            <input type="file" class="form-control" id="imageFile" name="ImageFile" asp-for="ImageFile" />
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <button type="submit" class="btn btn-primary ml-auto">Create</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.tiny.cloud/1/yceb7wqr2ps5v3vunieemb9syejgjl73j210uk6duakmo75e/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: "textarea",
+            Plugins: "lists",
+            menubar: "file edit format"
+        })
+    </script>
+}

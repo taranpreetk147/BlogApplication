@@ -1,34 +1,37 @@
 ﻿@page
 @model BlogApplication.Pages.Users.RegisterModel
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <form method="post">
-    <div class="card text-center">
+    <div class="card text-center" style="margin-top:80px;">
         <div class="card-header">
-            <h2 class="text-primary text-center">Register</h2>
+            <h2 class="text-info text-center">Register</h2>
         </div>
         <div class="card-body">
             <div class="container rounded border m-2 p-2">
                 <div class="form-group row">
-                    <label for="userName" class="col-sm-4 col-form-label">UserName</label>
+                    <label asp-for="UserName" class="col-sm-4 col-form-label">EmailAddress</label>
                     <div class="col-sm-5">
-                        <input type="text" id="userName" name="userName" class="form-control" placeholder="UserName" required> <br>
+                        <input type="text" id="userName" name="userName" class="form-control" value="@Model.UserName" placeholder="EmailAddress" required>
+                        <span id="userNameMessage" class="text-danger"></span><br />
                     </div>
                 </div>
-                <div class="col-12">
-                    <div class="form-group row">
-                        <label for="emailAddress" class="col-sm-4 col-form-label">EmailAddress</label>
-                        <div class="col-sm-5">
-                            <input type="text" id="emailAddress" name="emailAddress" class="form-control" placeholder="EmailAddress" required> <br>
-                        </div>
-                    </div>
+                @*         <div class="col-12">
+                <div class="form-group row">
+                <label for="emailAddress" class="col-sm-4 col-form-label">EmailAddress</label>
+                <div class="col-sm-5">
+                <input type="text" id="emailAddress" name="emailAddress" class="form-control" placeholder="EmailAddress" required> <br>
                 </div>
-                <div class="col-12">
-                    <div class="form-group row">
-                        <label for="address" class="col-sm-4 col-form-label">Address</label>
-                        <div class="col-sm-5">
-                            <input type="text" id="address" name="address" class="form-control" placeholder="Address" required> <br>
-                        </div>
-                    </div>
                 </div>
+                </div>*@
+                @*       <div class="col-12">
+                <div class="form-group row">
+                <label for="address" class="col-sm-4 col-form-label">Address</label>
+                <div class="col-sm-5">
+                <input type="text" id="address" name="address" class="form-control" placeholder="Address" required> <br>
+                </div>
+                </div>
+                </div>*@
                 <div class="col-12">
                     <div class="form-group row">
                         <label for="password" class="col-sm-4 col-form-label">Password</label>
@@ -40,16 +43,45 @@
             </div>
         </div>
         <div class="card-footer text-muted">
-            <button type="submit" class="btn btn-info">Register</button>
+            <button type="submit" asp-page-handler="Register" class="btn btn-outline-info">Register</button>
+        </div>
+        <div class="asp-link" style="margin-left:50%">
+            <a asp-page="/Users/Login">Already registered? want to login</a>
         </div>
     </div>
 </form>
+<form method="post">
+    <button type="submit" asp-page-handler="GoogleRegister" class="btn btn-primary"><i class="fa fa-google"></i></button>
+</form>
 @if (!string.IsNullOrEmpty(Model.ReturnMessage))
 {
-    <script>
-        alert('@Model.ReturnMessage');
-    </script>
+    <h5 class="col-4" style="margin-left:40%">
+        <div class="text text-danger" role="alert">
+            @Model.ReturnMessage
+        </div>
+    </h5>
 }
+
 <script>
-    document.getElementById('#password')
+    document.getElementById('userName').addEventListener('blur', function () {
+        var userName = this.value;
+
+        // Make an AJAX request to check if the username exists
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/Register/CheckUserNameAvailability?userName=' + userName, true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.returnMessage) {
+                    var userNameMessage = document.getElementById('userNameMessage');
+                    if (response.returnMessage === "User already registered") {
+                        userNameMessage.innerText = 'This username is already taken!';
+                    } else {
+                        userNameMessage.innerText = '';
+                    }
+                }
+            }
+        };
+        xhr.send();
+    });
 </script>

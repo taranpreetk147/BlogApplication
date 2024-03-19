@@ -10,7 +10,6 @@ using System.IO;
 
 namespace BlogApplication.Pages.Blog
 {
-    //[Authorize]
     public class CreateblogModel : PageModel
     {
         private readonly IConfiguration _configuration;

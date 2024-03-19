@@ -54,22 +54,21 @@
         </div>
         <div class="col-3">
             <div class="container rounded border m-2 p-2">
-            <h4 class="text-primary">Share your thoughts: &nbsp;<i class="fas fa-comment"></i></h4>
+            <h4 class="text-info">Share your thoughts: &nbsp;<i class="fas fa-comment"></i></h4>
             <form method="post" class="mb-3">
                 <div class="form-group">
                     <label for="userName">Name:</label>
-                    <input type="text" class="form-control" placeholder="Name" name="userName" required />
+                    <input type="text" class="form-control" placeholder="Name" name="userName" value="@User.Identity.Name" required />
                 </div>
                 <div class="form-group">
                     <label>Commment:</label>
                     <input type="text" class="form-control" placeholder="add comment" name="commentText" required />
                 </div>             
-                <button type="submit" class="btn btn-outline-primary" style="margin-left:75%; margin-top:2%">Submit</button>
+                <button type="submit" class="btn btn-outline-info" style="margin-left:75%; margin-top:2%">Share</button>
             </form>
         </div>
         </div>
-
     </div>
     </div>
-    @*Add modal*@
+  
 
