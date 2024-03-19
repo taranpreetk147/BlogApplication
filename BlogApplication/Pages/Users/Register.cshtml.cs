@@ -84,7 +84,7 @@ namespace BlogApplication.Pages.Users
             var properties = new AuthenticationProperties { RedirectUri = Url.Page("./Register", pageHandler: "ExternalRegisterCallback") };
             return Challenge(properties, "Google");
         }
-        public async Task<IActionResult> OnGetExternalRegisterCallbackAsync(string email,string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> OnGetExternalRegisterCallbackAsync(string email, string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
